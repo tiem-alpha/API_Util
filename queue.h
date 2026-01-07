@@ -1,0 +1,41 @@
+/*
+ * queue.h
+ *
+ *  Created on: Jun 9, 2024
+ *      Author: nguyen tiem
+ */
+#include<stdint.h>
+#include <stdbool.h>
+// #define QUEUE_MAX_SIZE 255
+enum {
+QUEUE_EMPTY,
+QUEUE_FULL,
+QUEUE_SUCCESS,
+
+};
+
+typedef struct queue{
+	volatile uint16_t _head;
+	volatile uint16_t _tail;
+	volatile uint8_t * _buffer;
+	volatile uint16_t _size; 
+	volatile uint8_t _isBusy;
+	volatile uint8_t _overwrite; 
+}queue;
+
+void queue_init(queue * mQueue, uint8_t* buff, uint16_t size);
+
+uint16_t queue_pop(queue * mQueue, uint8_t *buffer, uint16_t length);
+uint8_t queue_pop_byte(queue * mQueue, uint8_t *byte);
+uint8_t queue_push_byte(queue * mQueue, uint8_t value);
+uint16_t queue_push(queue * mQueue, uint8_t *buff, uint16_t length);
+uint8_t queue_peek(queue * mQueue);
+
+bool queue_is_full(queue * mQueue);
+
+bool queue_is_empty(queue * mQueue);
+
+uint16_t queue_get_space(queue * mQueue);
+
+bool queue_reset_push(queue *mQueue, uint8_t idx);
+uint16_t queue_poll(queue *mQueue, uint8_t *buffOut, uint16_t buffOutSize); 
