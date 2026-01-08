@@ -36,6 +36,3 @@ bool queue_is_full(queue * mQueue);
 bool queue_is_empty(queue * mQueue);
 
 uint16_t queue_get_space(queue * mQueue);
-
-bool queue_reset_push(queue *mQueue, uint8_t idx);
-uint16_t queue_poll(queue *mQueue, uint8_t *buffOut, uint16_t buffOutSize); 
