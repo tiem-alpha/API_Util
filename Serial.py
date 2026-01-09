@@ -1,50 +1,66 @@
 import serial
 import time
 import random
-import struct
+import msvcrt  
 
 PORT = "COM5"
 BAUD = 115200
-SEND_INTERVAL = 0.03   # 30ms
-
+sending_enabled = True
 ser = serial.Serial(PORT, BAUD, timeout=0.01)
 
-print("Opened", PORT)
+SEND_INTERVAL = 0.04  # seconds
+last_send = time.monotonic()
+last_print = time.monotonic()
+total = 0
+pre_total =0
+
+def send_packet():
+    length = random.randint(10, 50)
+
+    length_h = (length >> 8) & 0xFF
+    length_l = length & 0xFF
+
+    payload = bytes([0xAA] * length)
+
+    packet = bytes([0xAA, length_h, length_l]) + payload + bytes([0xBB])
+    
+    ser.write(packet)
+    # print("Sent:", (length+4))
+    return length + 4
+print("UART started on", PORT)
 
 try:
     while True:
-        # random data length
-        data_len = random.randint(100, 200)
 
-        # packet format: AA | len_hi len_lo | data... | BB
-        packet = bytearray()
-        packet.append(0xAA)
+        # ---- SEND PACKET PERIODICALLY ----
+        if msvcrt.kbhit():
+            key = msvcrt.getch().decode().upper()
 
-        # length 2 bytes big endian
-        packet += struct.pack(">H", data_len)
+            if key == 'E':
+                sending_enabled = False
+                print(">>> Sending Paused")
 
-        # data bytes (all 0x55)
-        packet += bytes([0x55] * data_len)
+            elif key == 'S':
+                sending_enabled = True
+                print(">>> Sending Resumed")
+        now = time.monotonic()
+        if now - last_send >= SEND_INTERVAL and sending_enabled:
+            total+= send_packet()
+           
+            last_send = now
+        if now - last_print > 1:
+            if pre_total != total:
+                print("Sent: ",total)
+                pre_total = total
+            last_print = now
+        # ---- READ IMMEDIATELY WHEN DATA ARRIVES ----
+        data = ser.read(1024)
+        if data:
+            print(data)   # in dạng bytes nguyên bản
 
-        packet.append(0xBB)
-
-        # send
-        ser.write(packet)
-        # print("Sent packet len:", len(packet))
-
-        # check response if any
-        resp = ser.read(1024)
-        if resp:
-            try:
-                text = resp.decode('utf-8', errors='ignore')
-            except:
-                text = str(resp)
-            print("RX:", text)
-
-        time.sleep(SEND_INTERVAL)
+        # tránh chiếm CPU
+        time.sleep(0.001)
 
 except KeyboardInterrupt:
-    print("Stopped")
-
-finally:
     ser.close()
+    print("Closed")

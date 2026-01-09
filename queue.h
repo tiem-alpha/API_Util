@@ -39,7 +39,7 @@ uint8_t queue_peek(queue *mQueue, uint8_t *value);
 bool queue_is_full(queue * mQueue);
 bool queue_is_empty(queue * mQueue);
 uint16_t queue_get_space(queue * mQueue);
-
+uint16_t queue_get_data_length(queue *mQueue);
 
 
 #ifdef __cplusplus

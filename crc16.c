@@ -1,12 +1,13 @@
 /*
  * crc.c
- *
+ * CRC-16/MCRF4XX
  *  Created on: Nov 28, 2024
  *      Author: TiemNV1
  */
 
+#include"crc16.h"
 
-static const uint16_t crc_table[256] =
+const uint16_t crc_table[256] =
 {
  0x0000, 0x1189, 0x2312, 0x329B, 0x4624, 0x57AD, 0x6536, 0x74BF,
  0x8C48, 0x9DC1, 0xAF5A, 0xBED3, 0xCA6C, 0xDBE5, 0xE97E, 0xF8F7,
@@ -46,11 +47,12 @@ void crc16_init(uint16_t *crc){
     *crc =0xFFFF;
 }
 
-uint16_t crc16_cal(uint8_t *buff, uint16_t len){
+uint16_t crc16_cal(uint8_t *buff, uint32_t len)
+{
 
 	uint16_t crc;
 	const unsigned char *ptr;
-	size_t a;
+	uint32_t a;
 
 	crc = 0xFFFF;
 	ptr = buff;
@@ -64,10 +66,11 @@ uint16_t crc16_cal(uint8_t *buff, uint16_t len){
 }
 
 
-void crc16_frag_cal(uint8_t *crc, uint8_t *buff, uint8_t len){
+void crc16_frag_cal(uint16_t *crc, uint8_t *buff, uint32_t len)
+{
 
 		const unsigned char *ptr;
-		size_t a;
+		uint32_t a;
 		ptr = buff;
 
 		if ( ptr != NULL ) for (a=0; a<len; a++) {
@@ -78,7 +81,8 @@ void crc16_frag_cal(uint8_t *crc, uint8_t *buff, uint8_t len){
 		return ;
 }
 
-void crc16_byte_cal(uint8_t *crc, uint8_t byte){
+void crc16_byte_cal(uint16_t *crc, uint8_t byte)
+{
 	(*crc) = ((*crc) >> 8) ^ crc_table[ ((*crc) ^ (uint16_t) byte) & 0x00FF ];
 	return ;
 }
