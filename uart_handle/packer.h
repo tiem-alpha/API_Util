@@ -5,6 +5,7 @@
 extern "C"
 {
 #endif
+
 #include "data_type.h"
 
     // Define protocol version

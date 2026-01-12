@@ -4,8 +4,8 @@
  *  Created on: Jun 9, 2024
  *      Author: nguyen tiem
  */
-#ifndef MY_QUEUE_H
-#define MY_QUEUE_H
+#ifndef _MY_QUEUE_H_
+#define _MY_QUEUE_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -47,3 +47,4 @@ uint16_t queue_get_data_length(queue *mQueue);
 #endif
 
 #endif
+

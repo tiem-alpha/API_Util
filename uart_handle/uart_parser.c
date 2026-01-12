@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdint.h>
 #include "crc16.h"
-#include "SEGGER_RTT.h"
+#include "log.h"
 #include "queue.h"
 #include "packer.h"
 
@@ -33,13 +33,18 @@ void uart_parser_pack_data(const char *data, uint16_t length, uint8_t *tx_buffer
     uint8_t res = pack_data(data, length, tx_buffer, tx_buffer_size, &packed_length);
     if (res != 0)
     {
-        SEGGER_RTT_WriteString(0, "Error: Failed to pack data for sending.\n");
+        log_print( "Error: Failed to pack data for sending.\n");
         return; // Error in packing data
     }
-    SEGGER_RTT_WriteString(0, "Data packed successfully for sending.\n");
+//    log_print( "Data packed successfully for sending.\n");
     if (on_pack_success)
     {
         on_pack_success(tx_buffer, packed_length);
+//        log_print("send ");
+//        for(int i =0 ;i<packed_length;i++){
+//        	log_printf("%.2X ",tx_buffer[i]);
+//        }
+//        log_println("");
     }
     return;
 }
@@ -54,7 +59,7 @@ void uart_parser_unpack_data(const char *data_input, uint16_t length, uint8_t *r
         }
         else if (result > PARSER_RUNNING)
         {
-            SEGGER_RTT_WriteString(0, "Error: Failed to unpack data from UART.\n");
+            log_printf( "Error: Failed to unpack data from UART.%d\n", result);
             if (on_unpack_fail != NULL)
             {
                 on_unpack_fail(result);
@@ -64,7 +69,7 @@ void uart_parser_unpack_data(const char *data_input, uint16_t length, uint8_t *r
         else
         {
 
-            SEGGER_RTT_WriteString(0, "Successfully unpacked a complete message from UART.\n");
+//            log_print( "Successfully unpacked a complete message from UART.\n");
             if (on_unpack_success != NULL)
             {
                 on_unpack_success(rx_buffer, rx_length);
@@ -83,7 +88,7 @@ uint8_t uart_parser_unpack_data_byte(const char data, uint8_t *rx_buffer, uint16
     }
     else if (result > PARSER_RUNNING)
     {
-        SEGGER_RTT_WriteString(0, "Error: Failed to unpack data from UART.\n");
+        log_printf( "Error: Failed to unpack data from UART.%d\n", result);
 
         if (on_unpack_fail != NULL)
         {
@@ -92,7 +97,7 @@ uint8_t uart_parser_unpack_data_byte(const char data, uint8_t *rx_buffer, uint16
     }
     else
     {
-        SEGGER_RTT_WriteString(0, "Successfully unpacked a complete message from UART.\n");
+//        log_print( "Successfully unpacked a complete message from UART.\n");
         // callback success full
         if (on_unpack_success != NULL)
         {
