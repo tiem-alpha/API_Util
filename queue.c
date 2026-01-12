@@ -1,14 +1,22 @@
 /*
  * queue.c
  *
+ *  Created on: Jan 9, 2026
+ *      Author: nguye
+ */
+
+
+/*
+ * queue.c
+ *
  *  Created on: Jun 9, 2024
  *      Author: nguye
  */
 
 #include "queue.h"
 #include <stdlib.h>
-/// queue is full when tail+1 % size = head 
-// queue is empty when head == tail 
+/// queue is full when tail+1 % size = head
+// queue is empty when head == tail
 
 void queue_init(queue *mQueue, uint8_t *buff, uint16_t size)
 {
@@ -22,7 +30,7 @@ void queue_init(queue *mQueue, uint8_t *buff, uint16_t size)
   mQueue->_overwrite = 0;
 }
 
-uint8_t queue_pop_byte(queue *mQueue, uint8_t *byte) // run on main 
+uint8_t queue_pop_byte(queue *mQueue, uint8_t *byte) // run on main
 {
   if (mQueue->_head == mQueue->_tail)
   {
@@ -30,7 +38,7 @@ uint8_t queue_pop_byte(queue *mQueue, uint8_t *byte) // run on main
   }
   // head++
   *byte = mQueue->_buffer[mQueue->_head];
-  mQueue->_head = (mQueue->_head++) % mQueue->_size;
+  mQueue->_head = (mQueue->_head + 1) % mQueue->_size;
   mQueue->_overwrite = 0;
   return QUEUE_SUCCESS;
 }
@@ -57,7 +65,7 @@ uint8_t queue_push_byte(queue *mQueue, uint8_t value)
   if((mQueue->_tail +1) % mQueue->_size == mQueue->_head)
   {
     mQueue->_overwrite = 1;
-    return QUEUE_FULL; 
+    return QUEUE_FULL;
   }
   mQueue->_buffer[mQueue->_tail] = value;
   mQueue->_tail = (mQueue->_tail + 1) % mQueue->_size;
@@ -66,7 +74,7 @@ uint8_t queue_push_byte(queue *mQueue, uint8_t value)
 
 uint16_t queue_push(queue *mQueue, uint8_t *buff, uint16_t length)
 {
-  uint16_t i =0; 
+  uint16_t i =0;
   for ( i = 0; i < length; i++)
   {
     if(queue_push_byte(mQueue, buff[i-1])  == QUEUE_FULL)
@@ -108,10 +116,10 @@ bool queue_is_empty(queue *mQueue)
 
 uint16_t queue_get_space(queue *mQueue)
 {
-  return mQueue->_size  - 1 - (mQueue->_tail + mQueue->_size +  - mQueue->_head) % mQueue->_size ;
+  return mQueue->_size  - 1 - (mQueue->_tail + mQueue->_size - mQueue->_head) % mQueue->_size ;
 }
 
 uint16_t queue_get_data_length(queue *mQueue)
 {
-  return (mQueue->_tail + mQueue->_size +  - mQueue->_head) % mQueue->_size;
+  return (mQueue->_tail + mQueue->_size - mQueue->_head) % mQueue->_size;
 }

@@ -6,7 +6,7 @@
  */
 
 #include"crc16.h"
-
+#define NULL ((void *)0)
 const uint16_t crc_table[256] =
 {
  0x0000, 0x1189, 0x2312, 0x329B, 0x4624, 0x57AD, 0x6536, 0x74BF,

@@ -4,8 +4,8 @@
  *  Created on: Jun 9, 2024
  *      Author: nguyen tiem
  */
-#ifndef _MY_QUEUE_H_
-#define _MY_QUEUE_H_
+#ifndef MY_QUEUE_H
+#define MY_QUEUE_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -26,8 +26,8 @@ typedef struct queue{
 	volatile uint16_t _head;
 	volatile uint16_t _tail;
 	volatile uint8_t * _buffer;
-	volatile uint16_t _size; 
-	volatile uint8_t _overwrite; 
+	volatile uint16_t _size;
+	volatile uint8_t _overwrite;
 }queue;
 
 void queue_init(queue * mQueue, uint8_t* buff, uint16_t size);
@@ -47,4 +47,3 @@ uint16_t queue_get_data_length(queue *mQueue);
 #endif
 
 #endif
-
