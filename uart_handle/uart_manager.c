@@ -81,17 +81,21 @@ void uart_manager_send_data(uint8_t *data, uint16_t length)
     }
 }
 
+uint8_t uart_rx[255];
 void uart_control()
 {
+//	uint8_t recv_byte;
     // handle rx queue
-    uint8_t uart_rx_byte;
-    if (queue_get_data_length(&uart_rx_queue) > 0)
+    if(queue_get_data_length(&uart_rx_queue) > 0)
     {
 //        log_printf("Processing data from UART RX queue...%d\r\n", queue_get_data_length(&uart_rx_queue));
-        while (queue_pop_byte(&uart_rx_queue, &uart_rx_byte) == QUEUE_SUCCESS)
-        {
-            uart_parser_unpack_data_byte(uart_rx_byte, uart_rx_buffer, sizeof(uart_rx_buffer));
-        }
+    	uint16_t len = queue_pop(&uart_rx_queue, uart_rx, 255);
+//    	 log_printf("poll %d \n", len);
+        uart_parser_unpack_data((const char*)uart_rx, len, uart_rx_buffer, sizeof(uart_rx_buffer));
+//    	while(queue_pop_byte(&uart_rx_queue, &recv_byte) == QUEUE_SUCCESS){
+//    		uart_parser_unpack_data_byte(recv_byte, uart_rx_buffer, sizeof(uart_rx_buffer));
+//    	}
+
     }
 
     //
