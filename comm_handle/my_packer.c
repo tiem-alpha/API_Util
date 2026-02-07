@@ -1,13 +1,45 @@
-#include "packer.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include "crc16.h"
 #include "log.h"
+#include "my_packer.h"
+#include "data_type.h"
+#include "packer.h"
+    // Define protocol version
+
+#define PACKER_START_BYTE 0xAC
+#define PACKER_END_BYTE 0xBB
+#define PACKER_MAX_PAYLOAD_SIZE 1024
+#define PACKER_MIN_PAYLOAD_SIZE 1
+#define PACKER_CHECKSUM_SIZE 2
+#define PACKER_HEADER_SIZE 2 // Start byte +CRC (2 bytes) + END byte
+#define PACKER_MAX_MESSAGE_LENTH (PACKER_HEADER_SIZE + PACKER_MAX_PAYLOAD_SIZE + PACKER_CHECKSUM_SIZE)
+
+    enum STATE_PARSE
+    {
+        WAIT_START,
+        READ_LENGTH_HIGH,
+        READ_LENGTH_LOW,
+        READ_PAYLOAD,
+        READ_CRC_HIGH,
+        READ_CRC_LOW,
+        WAIT_END,
+    };
+
+    enum PARSER_ERROR
+    {
+        PARSER_SUCCESS = PACK_SUCCESS,
+        PARSER_RUNNING = PACK_RUNNING,
+        PARSER_ERROR_LENGTH_OUT_OF_BOUNDS,
+        PARSER_ERROR_CRC_MISMATCH,
+        PARSER_ERROR_INVALID_START_BYTE,
+        PARSER_ERROR_INVALID_END_BYTE,
+    };
 
 
 
-uint8_t pack_data(const char *data, uint16_t length, uint8_t *buffer_out, uint16_t size_out, uint16_t *packed_length)
+uint8_t my_pack_data(const uint8_t *data, uint16_t length, uint8_t *buffer_out, uint16_t size_out, uint16_t *packed_length)
 {
     memset(buffer_out, 0, size_out);
     uint16_t crc = 0;
@@ -43,7 +75,7 @@ uint8_t pack_data(const char *data, uint16_t length, uint8_t *buffer_out, uint16
     return PARSER_SUCCESS; // Return total length of packed data
 }
 
-uint8_t unpack_data(char *buffer, uint16_t buffer_length, uint8_t *buffer_out, uint16_t size_out)
+uint8_t my_unpack_data(char *buffer, uint16_t buffer_length, uint8_t *buffer_out, uint16_t size_out)
 {
     // Simulate receiving data
     uint16_t crc = 0;
@@ -95,7 +127,7 @@ uint8_t unpack_data(char *buffer, uint16_t buffer_length, uint8_t *buffer_out, u
     return PARSER_SUCCESS; // Return number of bytes received
 }
 
-uint8_t unpack_data_state(uint8_t byte, uint8_t *buffer_out, uint16_t *offset, uint16_t *length, uint16_t size_out, uint16_t *crc, uint8_t *state)
+uint8_t my_unpack_data_state(uint8_t byte, uint8_t *buffer_out, uint16_t *offset, uint16_t *length, uint16_t size_out, uint16_t *crc, uint8_t *state)
 {
     uint8_t ret = PARSER_RUNNING;
     switch (*state)

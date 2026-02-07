@@ -18,16 +18,18 @@
 /// queue is full when tail+1 % size = head
 // queue is empty when head == tail
 
-void queue_init(queue *mQueue, uint8_t *buff, uint16_t size)
+uint8_t queue_init(queue *mQueue,  uint16_t size)
 {
-  if (buff == NULL)
-  {
-    return;
-  }
-  mQueue->_buffer = buff;
+
+  mQueue->_buffer = (uint8_t*)calloc(size,1);
+  if (mQueue->_buffer == NULL)
+   {
+     return 1;
+   }
   mQueue->_size = size;
   mQueue->_head = mQueue->_tail = 0;
   mQueue->_overwrite = 0;
+  return 0;
 }
 
 uint8_t queue_pop_byte(queue *mQueue, uint8_t *byte) // run on main
@@ -122,4 +124,14 @@ uint16_t queue_get_space(queue *mQueue)
 uint16_t queue_get_data_length(queue *mQueue)
 {
   return (mQueue->_tail + mQueue->_size + -mQueue->_head) % mQueue->_size;
+}
+
+uint8_t queue_deinit(queue *mQueue)
+{
+	 if (mQueue->_buffer == NULL)
+	   {
+	     return 1;
+	   }
+	 free(mQueue->_buffer);
+	 return 0;
 }

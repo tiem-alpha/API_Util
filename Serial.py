@@ -8,7 +8,7 @@ BAUD = 115200
 sending_enabled = True
 ser = serial.Serial(PORT, BAUD, timeout=0.01)
 
-SEND_INTERVAL = 0.1  # seconds
+SEND_INTERVAL = 0.02  # seconds
 last_send = time.monotonic()
 last_print = time.monotonic()
 total = 0

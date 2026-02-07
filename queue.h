@@ -25,12 +25,12 @@ QUEUE_SUCCESS,
 typedef struct queue{
 	volatile uint16_t _head;
 	volatile uint16_t _tail;
-	volatile uint8_t * _buffer;
-	volatile uint16_t _size;
+	uint8_t * _buffer;
+	uint16_t _size;
 	volatile uint8_t _overwrite;
 }queue;
 
-void queue_init(queue * mQueue, uint8_t* buff, uint16_t size);
+uint8_t queue_init(queue * mQueue, uint16_t size);
 uint16_t queue_pop(queue * mQueue, uint8_t *buffer, uint16_t length);
 uint8_t queue_pop_byte(queue * mQueue, uint8_t *byte);
 uint8_t queue_push_byte(queue * mQueue, uint8_t value);
