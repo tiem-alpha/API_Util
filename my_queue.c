@@ -12,7 +12,7 @@
  *      Author: nguye
  */
 
-#include "queue.h"
+#include "my_queue.h"
 #include <stdlib.h>
 // #include "log.h"
 /// queue is full when tail+1 % size = head

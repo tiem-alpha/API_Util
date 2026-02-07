@@ -21,7 +21,7 @@
 #include "comm_manager.h"
 #include "config.h"
 #include "log.h"
-#include "queue.h"
+#include "my_queue.h"
 #include "my_packer.h"
 #include "packer.h"
 #include <string.h>

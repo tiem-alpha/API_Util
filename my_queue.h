@@ -1,5 +1,5 @@
 /*
- * queue.h
+ * my_queue.h
  *
  *  Created on: Jun 9, 2024
  *      Author: nguyen tiem
